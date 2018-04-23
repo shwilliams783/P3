@@ -6,41 +6,57 @@
 #include <string>
 #include "statsem.h"
 
-std::string varStack[101];
-int tos = 0;
+std::string varStack[101]; // Variable Stack
+int tos = 0; // Top of Stack
 int varCount = 0;
-static const int STACKMAX = 99;
+static const int STACKMAX = 99; // varStack holds strings at indices 0-99
 
+/* push() adds the given string to varStack, and monitors the capacity of 
+   varStack, generating a statSemError() if tos >= STACKMAX. (varStack holds
+   100 srtings maximum). A successful push() will also increment tos. */
 void push(std::string str)
 {
+	// Check varStack capacity, add if under capacity
 	if(tos < STACKMAX)
 	{
 		varStack[tos] = str;
 		tos++;		
 	}
+	// Stack Overflow Error
 	else
 	{
 		statSemError(1);
 	}
 }
 
+/* pop() "removes" strings from varStack (by setting them to ""). A successful
+   pop() will also decrement tos. */
 void pop()
 {
+	// Remove string from tos
 	varStack[tos] = "";
 	if(tos > 0)
 	{
+		// Decrement tos
 		tos--;
 	}
 }
 
+/* find() returns -1 in the event that the given string, str, is not contained
+   within varStack. If the string is found within varStack, its location
+   relative to tos will be returned. find() works globally, so it's result is
+   tested against varCount when testing for local variable allocation.  */
 int find(std::string str)
 {
+	// Default to -1, (not found)
 	int result = -1;
 	int i;
 	for(i = tos; i > 0; i--)
 	{
+		// If the provided string matches the ith value of varStack
 		if(str.compare(varStack[i]) == 0)
 		{
+			// Set result to its location relative to tos, and break the loop
 			result = tos - i;
 			break;
 		}
@@ -48,20 +64,26 @@ int find(std::string str)
 	return result;
 }
 
+/* statSemError() takes a given error code, displays an error message to cerr
+   describing the error, and exits the program. */
 void statSemError(int errCode)
 {
 	switch(errCode)
 	{
 		case 1:
+			// Stack overflow
 			std::cerr<<"Error: Static semantics: varStack overflow."<<std::endl;
 			exit(errCode);
 		case 2:
+			// Duplicate variable allocation in same scope
 			std::cerr<<"Error: Static semantics: Duplicate variable found in scope."<<std::endl;
 			exit(errCode);
 		case 3:
+			// Undleclares variable
 			std::cerr<<"Error: Static semantics: Undeclared variable."<<std::endl;
 			exit(errCode);
 		default:
+			// Unknown other error
 			std::cerr<<"Error: Static semantics"<<std::endl;
 			exit(errCode);
 	}
@@ -133,7 +155,7 @@ void traversePostorder(node_t* root)
 		}
 		else
 		{
-			statSemError(3); // ADD ME TO statSemError()!!!
+			statSemError(3);
 		}
 	}
 	

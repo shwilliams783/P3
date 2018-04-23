@@ -29,8 +29,7 @@ int main(int argc, char* argv[])
 	inputValidation(argc, argv);
 	/* Initializes the parser */
 	root = parser();
-	/* Prints the parse tree */
-	traversePreorder(root);
+	/* Validates Static Semantics */
 	traversePostorder(root);
 }
 
