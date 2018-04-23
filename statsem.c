@@ -103,18 +103,15 @@ void traversePostorder(node_t* root)
 	// Variable Scope: <block> open
 	if(root->type == blocND)
 	{
-		std::cout<<"<block> open, resetting varCount from "<<previousVarCount<<" to "<<varCount<<std::endl; // DELETE AFTER DEBUGGING
 		varCount = 0;
 	}
 	
 	// Variable Allocation: <vars>/<mvars> open
 	if(root->type == varsND || root->type == mvarND)
 	{
-		std::cout<<"<vars>/<mvars> open"<<std::endl; // DELETE AFTER DEBUGGING
 		// Check if node contains an identifier
 		if(root->tokens[0].str.compare("NULL") != 0)
 		{	
-			std::cout<<"Identifier: "<<root->tokens[0].str<<" found"<<std::endl; // DELETE AFTER DEBUGGING
 			// Check to see if the Identifier is already defined in this scope
 			if(find(root->tokens[0].str) <= varCount && find(root->tokens[0].str) >= 0)
 			{
@@ -122,41 +119,27 @@ void traversePostorder(node_t* root)
 			}
 			else
 			{
-				std::cout<<"added "<<root->tokens[0].str<<" to varStack"<<std::endl; // DELETE AFTER DEBUGGING
 				push(root->tokens[0].str);
 				varCount++;
 			}
-		}
-		// Terminal <mvars> node
-		else
-		{
-			std::cout<<"Terminal <mvars>"<<std::endl; // DELETE AFTER DEBUGGING
 		}
 	}
 	
 	// Variable Usage: <R>, <in>, or <assign> open
 	if(root->type == RND || root->type == inND || root->type == asgnND)
 	{
-		std::cout<<"<R>/<in>/<assign> open"<<std::endl; // DELETE AFTER DEBUGGING
 		// IDTK found locally
-		if(find(root->tokens[0].str) < varCount && find(root->tokens[0].str) >= 0)
-		{
-			std::cout<<root->tokens[0].str<<" found at "<<find(root->tokens[0].str)<<std::endl; // DELETE AFTER DEBUGGING
-		}
+		if(find(root->tokens[0].str) < varCount && find(root->tokens[0].str) >= 0);
+
 		// IDTK found globally
-		else if(find(root->tokens[0].str) >= 0)
-		{
-			std::cout<<root->tokens[0].str<<" found globally at "<<find(root->tokens[0].str)<<std::endl; // DELETE AFTER DEBUGGING// DEBUG COUT
-		}
+		else if(find(root->tokens[0].str) >= 0);
+		
 		// <R> contains int or nothing -> (<expr>)
-		else if(root->tokens[0].id == IntTK || root->tokens[0].str.compare("NULL") == 0)
-		{
-			std::cout<<"<R> contains Int or NULL."<<std::endl; // DELETE AFTER DEBUGGING
-		}
+		else if(root->tokens[0].id == IntTK || root->tokens[0].str.compare("NULL") == 0);
+		
+		// Undeclared variable usage
 		else
-		{
 			statSemError(3);
-		}
 	}
 	
 	
@@ -186,15 +169,10 @@ void traversePostorder(node_t* root)
 	// Scope Closure: <block> closure
 	if(root->type == blocND)
 	{
-		std::cout<<"<block> close, resetting varCount from "<<varCount<<" to "<<previousVarCount<<std::endl; // DELETE AFTER DEBUGGING
-		std::cout<<"tos = "<<tos<<std::endl; // DELETE AFTER DEBUGGING
 		// Pop() varCount variables off of the varStack
 		for(i = 0; i < varCount; i++)
-		{
 			pop();
-			std::cout<<"pop() called, tos = "<<tos<<std::endl; // DELETE AFTER DEBUGGING
-		}
-		std::cout<<"tos = "<<tos<<std::endl; // DELETE AFTER DEBUGGING
+
 		// Reset varCount to previousVarCount before closing <block>
 		varCount = previousVarCount;
 	}

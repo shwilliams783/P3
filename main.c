@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
 	root = parser();
 	/* Validates Static Semantics */
 	traversePostorder(root);
+	std::cout<<"Static semantics complete."<<std::endl;
 }
 
 /* inputValidation() validates command line arguments and sets the file pointer
